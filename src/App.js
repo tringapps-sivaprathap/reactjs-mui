@@ -6,6 +6,7 @@ import './App.css';
 
 function App() {
   const [data, setData] = useState([]);
+//   const [updateData, setUpdateData] = useState({});
   const [index, setIndex] = useState(0);
   const [name, setName] = useState('');
   const [comments, setComments] = useState('');
@@ -46,7 +47,7 @@ function App() {
             <Button type='submit' variant='contained' endIcon={<KeyboardArrowRight />}>Submit</Button>
           </Box>
         </form>
-        <DisplayCards data={data} setData={setData} />
+        <DisplayCards data={data} setData={setData} setName={setName} setComments={setComments} />
     </Container>
   );
 }
