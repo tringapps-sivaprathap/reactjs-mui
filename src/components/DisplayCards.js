@@ -1,40 +1,26 @@
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import IconButton from '@mui/material/IconButton';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Button from '@mui/material/Button';
 import { useState } from 'react';
+import {
+  Typography, Button, IconButton,
+  Container, Grid,
+  Card, CardHeader, CardMedia, CardContent,
+  Menu, MenuItem,
+  Dialog, DialogActions, DialogTitle,
+} from '@mui/material';
+import MoreVertIcon  from '@mui/icons-material/MoreVert';
 import ProductImage from '../assets/product-picture.jpg';
 
-const DisplayCards = ({ data, setData, setName, setComments }) => {
+const DisplayCards = ({ data, setData, setName, setComments, productFlag }) => {
   const [clickIndex, setClickIndex] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   // for alert
   const [openPop, setOpenPop] = useState(false);
 
-  const handleClickOpenPop = () => {
-    setOpenPop(true);
-  };
+  const handleClickOpenPop = () => {setOpenPop(true)};
 
-  const cancelClosePop = () => {
-    setOpenPop(false);
-  };
+  const cancelClosePop = () => {setOpenPop(false)};
 
-  const yesClosePop = () => {
-    deleteCard();
-    setOpenPop(false);
-  };
+  const yesClosePop = () => {deleteCard(); setOpenPop(false);}
 
   const handleClick = (event, index) => {setAnchorEl(event.currentTarget); setClickIndex(index);};
 
@@ -64,9 +50,13 @@ const DisplayCards = ({ data, setData, setName, setComments }) => {
 
   return (
       <>
+      <Container sx={{ padding: '1rem'}}>
+      {productFlag && <Typography variant="h4" component="h4" className='product-section-title'>Products List</Typography>}
+      <Grid container spacing={3} sx={{ margin: '2rem 0'}}>
         {data.map((user) => {
             return (
-                <Card key={user.id} sx={{ maxWidth: 345 }}>
+              <Grid key={user.id} item md={3}>
+                <Card elevation={2}>
                     <CardHeader
                         action={
                             <IconButton id="options-button" onClick={(event) => {handleClick(event, user.id)}}
@@ -74,54 +64,40 @@ const DisplayCards = ({ data, setData, setName, setComments }) => {
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
                             >
-                                <MoreVertIcon />
+                              <MoreVertIcon />
                             </IconButton>
                         }
                         title={user.name}
                     />
                     <CardMedia
                         component="img"
-                        height="194"
+                        height="200vh"
                         image={ProductImage}
                         alt="Product Picture"
                     />
                     <CardContent>
                         <Typography variant='body'>
-                            {user.comments}
+                            {user.name + ' price is $' + user.comments}
                         </Typography>
                     </CardContent>
                 </Card>
+                </Grid>
             );
         })}
+        </Grid>
+      </Container>
 
-        <Menu id="options-menu" anchorEl={anchorEl} open={open}
-            MenuListProps={{
-            'aria-labelledby': 'options-button',
-            }}
-            onClose={handleClose}
-        >
+
+      <Menu id="options-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{'aria-labelledby': 'options-button'}}>
         <MenuItem onClick={editCard}>Edit</MenuItem>
         <MenuItem onClick={handleClickOpenPop}>Delete</MenuItem>
       </Menu>
 
-      <Dialog
-        open={openPop}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Are you sure want to delete?"}
-        </DialogTitle>
-        {/* <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous
-            location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent> */}
+      <Dialog open={openPop} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+        <DialogTitle id="alert-dialog-title">{"Are you sure want to delete?"}</DialogTitle>
         <DialogActions>
           <Button onClick={cancelClosePop} autoFocus>Cancel</Button>
-          <Button onClick={yesClosePop}>Yes</Button>
+          <Button variant='contained' onClick={yesClosePop}>Yes</Button>
         </DialogActions>
       </Dialog>
       </>
@@ -129,7 +105,3 @@ const DisplayCards = ({ data, setData, setName, setComments }) => {
 }
 
 export default DisplayCards;
-
-
-
-// onClick={() => {deleteCard(user.id)}}
