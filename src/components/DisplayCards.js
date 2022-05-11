@@ -18,7 +18,7 @@ const DisplayCards = ({ data, setData, setProName, setProPrice, listTitleFlag, s
   // options threedot button click
   const optionsClick = (event, index) => {setAnchorEl(event.currentTarget); setClickIndex(index);};
   
-  // edit menu option click
+  // edit option clicked in menu
   const editCard = () => {
     setUpdateFlag(true);
     setUpdateIndex(clickIndex);
@@ -36,7 +36,7 @@ const DisplayCards = ({ data, setData, setProName, setProPrice, listTitleFlag, s
   // to close the menu
   const handleClose = () => {setAnchorEl(null)};
 
-  // delete menu option click
+  // delete option clicked in menu
   const deleteClick = () => {setOpenPopUp(true)};
   
   // yes option clicked in popup

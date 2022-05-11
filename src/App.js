@@ -13,13 +13,6 @@ function App() {
   const [listTitleFlag, setListTitleFlag] = useState(false);
 
   const {register, handleSubmit, formState: { errors }} = useForm();
-
-//   useEffect(() => {
-//       if(localStorage.getItem('users') !== null) {
-//           let fetchedData = JSON.parse(localStorage.getItem('users'));
-//           setData((prevData) => [...prevData, ...fetchedData]);
-//       }
-//   }, []);
   
   useEffect(() => {
     localStorage.setItem('users', JSON.stringify(data));
@@ -52,7 +45,6 @@ function App() {
 
     setProName('');
     setProPrice('');
-    // setListTitleFlag(true);
   }
 
   return (
