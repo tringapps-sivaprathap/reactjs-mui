@@ -9,59 +9,64 @@ import {
 import MoreVertIcon  from '@mui/icons-material/MoreVert';
 import ProductImage from '../assets/product-picture.jpg';
 
-const DisplayCards = ({ data, setData, setProName, setProPrice, productFlag }) => {
+const DisplayCards = ({ data, setData, setProName, setProPrice, listTitleFlag, setUpdateFlag, setUpdateIndex }) => {
   const [clickIndex, setClickIndex] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openPopUp, setOpenPopUp] = useState(false);
   const open = Boolean(anchorEl);
 
+  // options threedot button click
   const optionsClick = (event, index) => {setAnchorEl(event.currentTarget); setClickIndex(index);};
   
-  // for alert
-  const [openPop, setOpenPop] = useState(false);
-
-  const handleClickOpenPop = () => {setOpenPop(true)};
-
-  const cancelClosePop = () => {setOpenPop(false)};
-
-  const yesClosePop = () => {deleteCard(); setOpenPop(false);}
-
-  const handleClose = () => {setAnchorEl(null)};
-  
-  const deleteCard = () => {
-      setData(data.filter((user) => {
-          return user.id !== clickIndex;
-      }));
-      console.log(data);
-      handleClose();
-  }
-
+  // edit menu option click
   const editCard = () => {
-    data.forEach(user => {
-        if(user.id === clickIndex) {
-            setProName(user.proName);
-            setProPrice(user.proPrice);
+    setUpdateFlag(true);
+    setUpdateIndex(clickIndex);
+
+    data.forEach(product => {
+        if(product.proId === clickIndex) {
+            setProName(product.proName);
+            setProPrice(product.proPrice);
         }
     });
-    setData(data.filter((user) => {
-        return user.id !== clickIndex;
-    }));
-    console.log(data);
+
     handleClose();
-}
+  }
+
+  // to close the menu
+  const handleClose = () => {setAnchorEl(null)};
+
+  // delete menu option click
+  const deleteClick = () => {setOpenPopUp(true)};
+  
+  // yes option clicked in popup
+  const yesPopUpClick = () => {deleteCard(); setOpenPopUp(false);}
+
+  // delete the card
+  const deleteCard = () => {
+    setData(data.filter((product) => {
+        return product.proId !== clickIndex;
+    }));
+    
+    handleClose();
+  }
+
+  // cancel option clicked in popup
+  const cancelPopUpClick = () => {setOpenPopUp(false)};
 
   return (
     <>
       <Container sx={{ padding: '1rem'}}>
-        {productFlag && <Typography variant="h4" component="h4" className='product-section-title'>Products List</Typography>}
+        {listTitleFlag && <Typography variant="h4" component="h4" className='product-section-title'>Products List</Typography>}
         
         <Grid container spacing={3} sx={{ margin: '2rem 0'}}>
-          {data.map((user) => {
+          {data.map((product) => {
             return (
-              <Grid key={user.id} item md={3}>
+              <Grid key={product.proId} item md={3}>
                 <Card elevation={2}>
                     <CardHeader
                       action={
-                          <IconButton id="options-button" onClick={(event) => {optionsClick(event, user.id)}}
+                          <IconButton id="options-button" onClick={(event) => {optionsClick(event, product.proId)}}
                             aria-controls={open ? 'options-menu' : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
@@ -69,7 +74,7 @@ const DisplayCards = ({ data, setData, setProName, setProPrice, productFlag }) =
                             <MoreVertIcon />
                           </IconButton>
                       }
-                      title={user.proName}
+                      title={product.proName}
                     />
 
                     <CardMedia
@@ -80,7 +85,7 @@ const DisplayCards = ({ data, setData, setProName, setProPrice, productFlag }) =
                     />
 
                     <CardContent>
-                      <Typography variant='body'>{user.proName + ' price is $' + user.proPrice}</Typography>
+                      <Typography variant='body'>{product.proName + ' price is $' + product.proPrice}</Typography>
                     </CardContent>
                 </Card>
               </Grid>
@@ -91,15 +96,15 @@ const DisplayCards = ({ data, setData, setProName, setProPrice, productFlag }) =
 
       <Menu id="options-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{'aria-labelledby': 'options-button'}}>
         <MenuItem onClick={editCard}>Edit</MenuItem>
-        <MenuItem onClick={handleClickOpenPop}>Delete</MenuItem>
+        <MenuItem onClick={deleteClick}>Delete</MenuItem>
       </Menu>
 
-      <Dialog open={openPop} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+      <Dialog open={openPopUp} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
         <DialogTitle id="alert-dialog-title">{"Are you sure want to delete?"}</DialogTitle>
 
         <DialogActions>
-          <Button onClick={cancelClosePop} autoFocus>Cancel</Button>
-          <Button onClick={yesClosePop} variant='contained'>Yes</Button>
+          <Button onClick={cancelPopUpClick} autoFocus>Cancel</Button>
+          <Button onClick={yesPopUpClick} variant='contained'>Yes</Button>
         </DialogActions>
       </Dialog>
     </>

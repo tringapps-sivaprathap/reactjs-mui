@@ -4,32 +4,55 @@ import { Typography, TextField, Button, Stack, Paper } from '@mui/material';
 import DisplayCards from './components/DisplayCards';
 
 function App() {
-  const [data, setData] = useState([]);
-  const [index, setIndex] = useState(0);
+  const [data, setData] = useState(() => JSON.parse(localStorage.getItem('users')) || []);
+  const [proId, setProId] = useState(0);
   const [proName, setProName] = useState('');
   const [proPrice, setProPrice] = useState('');
-  const [productFlag, setProductFlag] = useState(false);
+  const [updateFlag, setUpdateFlag] = useState(false);
+  const [updateIndex, setUpdateIndex] = useState(-1);
+  const [listTitleFlag, setListTitleFlag] = useState(false);
 
   const {register, handleSubmit, formState: { errors }} = useForm();
 
+//   useEffect(() => {
+//       if(localStorage.getItem('users') !== null) {
+//           let fetchedData = JSON.parse(localStorage.getItem('users'));
+//           setData((prevData) => [...prevData, ...fetchedData]);
+//       }
+//   }, []);
+  
   useEffect(() => {
     localStorage.setItem('users', JSON.stringify(data));
-    (data.length === 0) && setProductFlag(false);
+    (data.length === 0) ? setListTitleFlag(false) : setListTitleFlag(true);
   }, [data]);
  
-  const onSubmit = (formData) => {
-    let user = {
-      id: index,
-      proName: formData.productName,
-      proPrice: formData.productPrice
+  const onSubmit = () => {
+    if(updateFlag) {
+        let newData = data.map((product, proId) => {
+            if(proId === updateIndex) {
+                return {proId, proName, proPrice}
+            }
+            else {
+                return {
+                    proId: product.proId,
+                    proName: product.proName,
+                    proPrice: product.proPrice
+                }
+            }
+        });
+        setData(newData);
+        setUpdateFlag(false);
     }
-    
-    setData([...data, user]);
-    setIndex(index + 1);
+    else {
+        let product = {proId, proName, proPrice}
+          
+        setData([...data, product]);
+        setProId(proId + 1);
+    }
 
     setProName('');
     setProPrice('');
-    setProductFlag(true);
+    // setListTitleFlag(true);
   }
 
   return (
@@ -70,7 +93,12 @@ function App() {
         </form>
       </Paper>
       
-      <DisplayCards data={data} setData={setData} setProName={setProName} setProPrice={setProPrice} productFlag={productFlag}/>
+      <DisplayCards
+        data={data} setData={setData}
+        setProName={setProName} setProPrice={setProPrice}
+        setUpdateFlag={setUpdateFlag} setUpdateIndex={setUpdateIndex}
+        listTitleFlag={listTitleFlag}
+      />
     </>
   );
 }
